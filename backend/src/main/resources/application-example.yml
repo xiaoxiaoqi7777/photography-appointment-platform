@@ -1,0 +1,12 @@
+# 本地配置模板：复制为 application-local.yml 后填入真实值
+# application-local.yml 已被 .gitignore 忽略，不会提交到 Git
+spring:
+  datasource:
+    username: root
+    password: <数据库密码>
+
+app:
+  jwt:
+    # 至少 32 字节随机串（推荐 64 位十六进制），可用 PowerShell 生成：
+    # $b=New-Object byte[] 32;(New-Object Security.Cryptography.RNGCryptoServiceProvider).GetBytes($b);-join($b|%{$_.ToString('x2')})
+    secret: <至少32字节的随机密钥>
