@@ -3,6 +3,7 @@ package com.jieyou.photography.module.auth.controller;
 import com.jieyou.photography.common.api.ApiResponse;
 import com.jieyou.photography.module.auth.dto.LoginRequest;
 import com.jieyou.photography.module.auth.dto.LoginResponse;
+import com.jieyou.photography.module.auth.dto.RegisterRequest;
 import com.jieyou.photography.module.auth.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,5 +25,11 @@ public class AuthController {
     @PostMapping("/api/auth/login")
     public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         return ApiResponse.success(authService.login(request));
+    }
+
+    @PostMapping("/api/auth/register")
+    public ApiResponse<Void> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ApiResponse.success();
     }
 }
