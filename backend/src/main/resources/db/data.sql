@@ -24,19 +24,19 @@ WHERE NOT EXISTS (SELECT 1 FROM `t_user` WHERE `username` = 'admin');
 -- 2. 演示主题（全部上架）
 -- ---------------------------------------------------------------------
 INSERT INTO `t_theme` (`name`, `cover_url`, `description`, `tags`, `sort`, `status`)
-SELECT '森系写真', NULL,
+SELECT '森系写真', '/images/themes/forest.jpg',
        '走进自然森林，捕捉清新灵动的个人写真瞬间，适合第一次拍写真的你。',
        '森系,清新,自然', 90, 1
 WHERE NOT EXISTS (SELECT 1 FROM `t_theme` WHERE `name` = '森系写真');
 
 INSERT INTO `t_theme` (`name`, `cover_url`, `description`, `tags`, `sort`, `status`)
-SELECT '婚纱照', NULL,
+SELECT '婚纱照', '/images/themes/wedding.jpg',
        '内外景双机位拍摄，记录属于你们的浪漫仪式感，半日/全日两种方案可选。',
        '婚纱,浪漫,仪式感', 100, 1
 WHERE NOT EXISTS (SELECT 1 FROM `t_theme` WHERE `name` = '婚纱照');
 
 INSERT INTO `t_theme` (`name`, `cover_url`, `description`, `tags`, `sort`, `status`)
-SELECT '全家福', NULL,
+SELECT '全家福', '/images/themes/family.jpg',
        '三代同框的温馨时刻，专业引导摆拍，留住全家人的幸福笑容。',
        '全家福,温馨,亲子', 80, 1
 WHERE NOT EXISTS (SELECT 1 FROM `t_theme` WHERE `name` = '全家福');
@@ -47,7 +47,7 @@ WHERE NOT EXISTS (SELECT 1 FROM `t_theme` WHERE `name` = '全家福');
 INSERT INTO `t_package`
     (`theme_id`, `name`, `price`, `retouch_count`, `duration`, `includes`, `cover_url`, `sort`, `status`)
 SELECT t.`id`, '森系轻写真', 399.00, 10, '2 小时',
-       '场地协调 1 次、服装 1 套、精修 10 张、全部原片赠送', NULL, 90, 1
+       '场地协调 1 次、服装 1 套、精修 10 张、全部原片赠送', '/images/packages/forest-light.jpg', 90, 1
 FROM `t_theme` t
 WHERE t.`name` = '森系写真'
   AND NOT EXISTS (SELECT 1 FROM `t_package` p WHERE p.`name` = '森系轻写真');
@@ -55,7 +55,7 @@ WHERE t.`name` = '森系写真'
 INSERT INTO `t_package`
     (`theme_id`, `name`, `price`, `retouch_count`, `duration`, `includes`, `cover_url`, `sort`, `status`)
 SELECT t.`id`, '森系全写真', 699.00, 20, '3 小时',
-       '场地协调 1 次、服装 2 套、精修 20 张、全部原片赠送、10 寸相册 1 本', NULL, 85, 1
+       '场地协调 1 次、服装 2 套、精修 20 张、全部原片赠送、10 寸相册 1 本', '/images/packages/forest-full.jpg', 85, 1
 FROM `t_theme` t
 WHERE t.`name` = '森系写真'
   AND NOT EXISTS (SELECT 1 FROM `t_package` p WHERE p.`name` = '森系全写真');
@@ -63,7 +63,7 @@ WHERE t.`name` = '森系写真'
 INSERT INTO `t_package`
     (`theme_id`, `name`, `price`, `retouch_count`, `duration`, `includes`, `cover_url`, `sort`, `status`)
 SELECT t.`id`, '婚纱半日拍', 1999.00, 30, '4 小时',
-       '内外景任选 1 景、服装 3 套、精修 30 张、全部原片赠送', NULL, 100, 1
+       '内外景任选 1 景、服装 3 套、精修 30 张、全部原片赠送', '/images/packages/wedding-half-day.jpg', 100, 1
 FROM `t_theme` t
 WHERE t.`name` = '婚纱照'
   AND NOT EXISTS (SELECT 1 FROM `t_package` p WHERE p.`name` = '婚纱半日拍');
@@ -71,7 +71,7 @@ WHERE t.`name` = '婚纱照'
 INSERT INTO `t_package`
     (`theme_id`, `name`, `price`, `retouch_count`, `duration`, `includes`, `cover_url`, `sort`, `status`)
 SELECT t.`id`, '婚纱全日拍', 3299.00, 50, '8 小时',
-       '内外景任选 2 景、服装 5 套、精修 50 张、全部原片赠送、12 寸相册 2 本、摆台 1 个', NULL, 95, 1
+       '内外景任选 2 景、服装 5 套、精修 50 张、全部原片赠送、12 寸相册 2 本、摆台 1 个', '/images/packages/wedding-full-day.jpg', 95, 1
 FROM `t_theme` t
 WHERE t.`name` = '婚纱照'
   AND NOT EXISTS (SELECT 1 FROM `t_package` p WHERE p.`name` = '婚纱全日拍');
@@ -79,7 +79,34 @@ WHERE t.`name` = '婚纱照'
 INSERT INTO `t_package`
     (`theme_id`, `name`, `price`, `retouch_count`, `duration`, `includes`, `cover_url`, `sort`, `status`)
 SELECT t.`id`, '全家福标准', 599.00, 15, '2 小时',
-       '服装提供（至多 5 人）、精修 15 张、全部原片赠送', NULL, 80, 1
+       '服装提供（至多 5 人）、精修 15 张、全部原片赠送', '/images/packages/family-standard.jpg', 80, 1
 FROM `t_theme` t
 WHERE t.`name` = '全家福'
   AND NOT EXISTS (SELECT 1 FROM `t_package` p WHERE p.`name` = '全家福标准');
+
+-- ---------------------------------------------------------------------
+-- 4. 已有演示数据补齐封面（可重复执行；图片位于 frontend/public/images/）
+-- ---------------------------------------------------------------------
+UPDATE `t_theme` SET `cover_url` = '/images/themes/forest.jpg'
+WHERE `name` = '森系写真' AND (`cover_url` IS NULL OR `cover_url` = '');
+
+UPDATE `t_theme` SET `cover_url` = '/images/themes/wedding.jpg'
+WHERE `name` = '婚纱照' AND (`cover_url` IS NULL OR `cover_url` = '');
+
+UPDATE `t_theme` SET `cover_url` = '/images/themes/family.jpg'
+WHERE `name` = '全家福' AND (`cover_url` IS NULL OR `cover_url` = '');
+
+UPDATE `t_package` SET `cover_url` = '/images/packages/forest-light.jpg'
+WHERE `name` = '森系轻写真' AND (`cover_url` IS NULL OR `cover_url` = '');
+
+UPDATE `t_package` SET `cover_url` = '/images/packages/forest-full.jpg'
+WHERE `name` = '森系全写真' AND (`cover_url` IS NULL OR `cover_url` = '');
+
+UPDATE `t_package` SET `cover_url` = '/images/packages/wedding-half-day.jpg'
+WHERE `name` = '婚纱半日拍' AND (`cover_url` IS NULL OR `cover_url` = '');
+
+UPDATE `t_package` SET `cover_url` = '/images/packages/wedding-full-day.jpg'
+WHERE `name` = '婚纱全日拍' AND (`cover_url` IS NULL OR `cover_url` = '');
+
+UPDATE `t_package` SET `cover_url` = '/images/packages/family-standard.jpg'
+WHERE `name` = '全家福标准' AND (`cover_url` IS NULL OR `cover_url` = '');
