@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -51,6 +52,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleNotFound(Exception e) {
         log.warn("资源不存在: {}", e.getMessage());
         return ResponseEntity.status(404).body(ApiResponse.error(ResultCode.NOT_FOUND, "资源不存在"));
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMultipart(MultipartException e) {
+        log.warn("上传请求解析失败: {}", e.getMessage());
+        return ResponseEntity.status(400)
+                .body(ApiResponse.error(ResultCode.PARAM_INVALID, "上传文件过大或请求格式不合法"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)

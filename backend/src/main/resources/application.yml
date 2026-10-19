@@ -13,6 +13,12 @@ spring:
     password: ${DB_PASSWORD:}
   jackson:
     time-zone: Asia/Shanghai
+  servlet:
+    multipart:
+      # 业务上限为单文件 10MB（服务层二次校验并计入 failed 清单）；
+      # 容器上限略高，保证 10~20MB 的文件能进入业务校验并返回明确原因。
+      max-file-size: 20MB
+      max-request-size: 420MB
 
 mybatis-plus:
   configuration:

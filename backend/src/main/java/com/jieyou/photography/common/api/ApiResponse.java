@@ -22,6 +22,13 @@ public class ApiResponse<T> {
         return new ApiResponse<>(ResultCode.SUCCESS, "成功", data);
     }
 
+    /**
+     * 成功但需要附带可读提示（如“关联主题已下架”），code 仍为 0。
+     */
+    public static <T> ApiResponse<T> success(T data, String message) {
+        return new ApiResponse<>(ResultCode.SUCCESS, message, data);
+    }
+
     public static ApiResponse<Void> success() {
         return new ApiResponse<>(ResultCode.SUCCESS, "成功", null);
     }

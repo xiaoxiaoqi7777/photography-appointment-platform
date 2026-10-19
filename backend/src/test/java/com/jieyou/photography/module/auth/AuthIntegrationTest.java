@@ -139,8 +139,9 @@ class AuthIntegrationTest {
         JsonNode loginBody = objectMapper.readTree(loginResult.getResponse().getContentAsString());
         String token = loginBody.path("data").path("token").asText();
 
-        // 授权层通过后进入路由匹配：该路径尚无处理器，Spring 返回 404（而非 401/403）
+        // 授权层通过后进入订单管理接口（阶段五已实现），应返回业务成功而非 401/403
         mockMvc.perform(get("/api/admin/orders").header("Authorization", "Bearer " + token))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0));
     }
 }
