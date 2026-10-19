@@ -51,4 +51,9 @@ public class OrderController {
     public ApiResponse<OrderVO> cancel(@PathVariable Long id) {
         return ApiResponse.success(orderService.cancel(id));
     }
+
+    @PostMapping("/{id}/deliver")
+    public ApiResponse<OrderVO> deliver(@PathVariable Long id) {
+        return ApiResponse.success(orderService.deliver(id));
+    }
 }

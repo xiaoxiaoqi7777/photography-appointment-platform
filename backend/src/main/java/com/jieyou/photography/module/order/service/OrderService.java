@@ -209,6 +209,31 @@ public class OrderService {
         return transition(id, from, OrderStatus.UPLOADED, OrderAction.UPLOAD, operator, null, null);
     }
 
+    /**
+     * 用户提交修改意见后流转为 MODIFYING（UPLOADED → MODIFYING），
+     * 供反馈模块在写入 t_feedback 的同一事务中调用。
+     */
+    @Transactional
+    public OrderVO markModifying(Long id, LoginUser operator) {
+        requireOrderRow(id);
+        return transition(id, OrderStatus.UPLOADED, OrderStatus.MODIFYING, OrderAction.MODIFY,
+                operator, null, null);
+    }
+
+    /**
+     * 确认交付（POST /api/orders/{id}/deliver）：仅本人、仅 UPLOADED；
+     * DELIVERED 为终态，写入 deliver_time。
+     */
+    @Transactional
+    public OrderVO deliver(Long id) {
+        LoginUser user = requireUser();
+        OrderRow row = requireOrderRow(id);
+        requireOwnership(row, user);
+        LocalDateTime now = LocalDateTime.now();
+        return transition(id, OrderStatus.UPLOADED, OrderStatus.DELIVERED, OrderAction.DELIVER,
+                user, null, update -> update.set(Order::getDeliverTime, now));
+    }
+
     private static OrderStatus parseStatus(String status) {
         try {
             return OrderStatus.valueOf(status);
