@@ -74,6 +74,9 @@ npm run preview
 - 照片预览与下载接口需要鉴权，不能直接作为 `<img src>`：
   预览通过 axios 拉取 Blob 后生成本地 Object URL（`src/components/AuthImage.vue`，带懒加载与灯箱预览）；
   原图下载通过 Blob + `Content-Disposition` 解析文件名后保存。
+- 管理端主题/套餐表单支持直接上传封面（`POST /api/admin/covers`，JPG/JPEG/PNG、≤5MB），
+  上传成功后自动填入 `coverUrl`；也可继续手动填写外链或 `/images/...` 静态资源地址。
+  后端上传的封面通过公开只读地址 `/api/covers/{filename}` 访问。
 - 当前所有页面均连接真实后端接口，未使用 Mock 数据。
 
 ## 7. 目录结构
@@ -125,3 +128,6 @@ location /api/ {
 
 图片来自 [Unsplash](https://unsplash.com/license)，仅作为项目演示素材。
 源文件与演示数据初始化见 `backend/src/main/resources/db/data.sql`。
+
+通过管理端上传的封面保存在后端 `uploads/covers/`，数据库中记录为 `/api/covers/...`。
+开发环境由 Vite 代理转发，生产部署时仍需将 `/api` 反向代理到后端。

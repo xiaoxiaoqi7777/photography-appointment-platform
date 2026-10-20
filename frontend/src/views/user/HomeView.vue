@@ -246,14 +246,24 @@ onMounted(load)
 }
 
 .theme-cover {
+  position: relative;
   aspect-ratio: 4 / 3;
+  overflow: hidden;
   background: #efe9e0;
 }
 
-.cover-image,
+/* 绝对定位避免图片原始比例撑高卡片，保证所有主题封面高度一致 */
+.cover-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .cover-image :deep(img) {
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
 .theme-body {

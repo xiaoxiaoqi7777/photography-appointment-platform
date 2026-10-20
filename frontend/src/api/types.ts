@@ -188,3 +188,7 @@ export interface UploadResult {
   success: string[]
   failed: FailedFile[]
 }
+
+export interface CoverUploadResult {
+  url: string
+}

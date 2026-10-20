@@ -9,6 +9,7 @@ import {
   updatePackageStatus,
 } from '@/api/packages'
 import type { PackageSavePayload, PhotoPackage, Theme } from '@/api/types'
+import CoverUploader from '@/components/CoverUploader.vue'
 import { formatDateTime, formatPrice } from '@/utils/format'
 
 interface PackageForm {
@@ -390,8 +391,8 @@ onMounted(async () => {
             placeholder="如：服装 2 套、妆造 1 次、精修 10 张（选填）"
           />
         </el-form-item>
-        <el-form-item label="封面地址" prop="coverUrl">
-          <el-input v-model="form.coverUrl" maxlength="255" placeholder="https://...（选填）" />
+        <el-form-item label="封面图片" prop="coverUrl">
+          <CoverUploader v-model="form.coverUrl" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">

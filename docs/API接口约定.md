@@ -145,6 +145,8 @@ Authorization: Bearer <token>
 - 上传接口需同时做类型白名单与大小校验，并防范路径穿越与不可信文件名。【AGENTS.md 第 9 节】
 - 【已确认】批量上传字段名 `files`，单次上限 20 张；部分文件失败仍返回 HTTP 200，`data` 含成功与失败清单。
 - 【已确认】`uploads/` 目录不直接对外暴露为静态资源，文件读取统一经鉴权接口；如需直链使用短期签名 URL。
+- 上述 10MB 上限与 `uploads/{订单ID}/` 存储位置适用于订单照片；主题/套餐封面另见 5.8
+  （≤5MB，存储于 `uploads/covers/`，通过专用只读接口公开访问）。
 
 ---
 
@@ -682,6 +684,40 @@ Authorization: Bearer <token>
   - 订单非本人 → 403。
 - 约束：`DELIVERED` 为终态，不可再申请修改。【文档明确 B-2】
 
+### 5.8 封面图片上传（实现补充）
+
+> 主题/套餐的 `coverUrl` 仍可填写外链或前端静态资源相对路径；本节为管理端上传本地封面的辅助能力，
+> 不改变 `t_theme` / `t_package` 表结构。
+
+#### 5.8.1 上传封面图片
+
+- 方法与路径：`POST /api/admin/covers`【已确认】
+- 调用角色：ADMIN
+- 请求参数：`multipart/form-data`，单文件字段名 `file`。
+- 校验规则：仅 `jpg / jpeg / png`；单文件 ≤ **5MB**；同时校验扩展名与文件头魔数；原始文件名不参与存储。
+- 服务端行为：以 UUID 生成文件名，落盘 `uploads/covers/`；返回公开读取地址。
+- 响应 `data`：
+
+```json
+{
+  "url": "/api/covers/0f8c2f6f2d7e4b8c9a1d3e5f7a9b0c1d.jpg"
+}
+```
+
+- 异常情况：
+  - 文件为空 / 类型不符 / 超过 5MB / 文件名含路径字符 → `40000`。
+  - 未登录 → 401；非管理员 → 403。
+
+#### 5.8.2 读取封面图片
+
+- 方法与路径：`GET /api/covers/{filename}`【已确认】
+- 调用角色：公开（封面为营销素材）
+- 说明：
+  - 仅接受服务端生成的 UUID 文件名（`^[0-9a-f]{32}\.(jpg|jpeg|png)$`），其余名称一律 `40400`。
+  - 返回图片文件流，`Cache-Control: public, max-age=31536000, immutable`。
+  - 该接口只开放 `uploads/covers/` 下的封面文件；订单照片等 `uploads/` 其他内容仍不经静态资源或本接口暴露。
+- 异常情况：文件不存在或名称不合法 → `40400`。
+
 ---
 
 ## 6. 订单相关状态操作与日志动作对照
@@ -714,6 +750,8 @@ Authorization: Bearer <token>
 | 套餐 | `/api/admin/packages`、`/api/admin/packages/{id}` | GET/POST/PUT | ADMIN |
 | 套餐 | `/api/admin/packages/{id}/status` | PATCH | ADMIN |
 | 套餐 | `/api/themes/{themeId}/packages`、`/api/packages/{id}` | GET | 公开 |
+| 封面 | `/api/admin/covers` | POST | ADMIN |
+| 封面 | `/api/covers/{filename}` | GET | 公开 |
 | 订单 | `/api/orders` | POST / GET | USER |
 | 订单 | `/api/orders/{id}`、`/api/orders/{id}/cancel` | GET / POST | USER（本人） |
 | 订单 | `/api/admin/orders`、`/api/admin/orders/{id}` | GET | ADMIN |
@@ -915,6 +953,7 @@ Authorization: Bearer <token>
 | S-01 | 详情字段裁剪 | 时间线仅返回 `{ action, fromStatus, toStatus, remark, createTime }`；不返回 `operator_id`、`password` |
 | S-02 | 文件防绕过鉴权 | 不暴露 `uploads/` 静态目录，统一经鉴权接口；如需直链用短期签名 URL（5~15 分钟） |
 | S-03 | 重复提交幂等 | 状态流转统一条件更新（乐观锁）+ 事务写 `t_order_log`，防重复确认/交付 |
+| S-04 | 封面公开读取 | 封面为营销素材，`uploads/covers/` 通过 `/api/covers/{filename}` 公开只读；仅允许服务端生成的 UUID 文件名，订单照片仍按 S-02 鉴权 |
 
 ### 9.8 原始文档冲突与处理口径（需文档归口人同步）
 

@@ -8,6 +8,7 @@ import {
   updateThemeStatus,
 } from '@/api/themes'
 import type { Theme, ThemeSavePayload } from '@/api/types'
+import CoverUploader from '@/components/CoverUploader.vue'
 import { formatDateTime } from '@/utils/format'
 
 interface ThemeForm {
@@ -271,8 +272,8 @@ onMounted(load)
         <el-form-item label="主题名称" prop="name">
           <el-input v-model="form.name" maxlength="50" placeholder="如：城市写真" />
         </el-form-item>
-        <el-form-item label="封面地址" prop="coverUrl">
-          <el-input v-model="form.coverUrl" maxlength="255" placeholder="https://...（选填）" />
+        <el-form-item label="封面图片" prop="coverUrl">
+          <CoverUploader v-model="form.coverUrl" />
         </el-form-item>
         <el-form-item label="标签" prop="tags">
           <el-select
