@@ -1,6 +1,6 @@
 package com.jieyou.photography.security;
 
-import com.jieyou.photography.module.user.mapper.UserMapper;
+import com.jieyou.photography.mapper.user.UserMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

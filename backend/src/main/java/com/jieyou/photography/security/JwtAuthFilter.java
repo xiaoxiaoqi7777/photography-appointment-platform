@@ -1,7 +1,7 @@
 package com.jieyou.photography.security;
 
-import com.jieyou.photography.module.user.entity.User;
-import com.jieyou.photography.module.user.mapper.UserMapper;
+import com.jieyou.photography.entity.user.User;
+import com.jieyou.photography.mapper.user.UserMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

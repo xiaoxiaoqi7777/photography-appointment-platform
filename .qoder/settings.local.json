@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find . -type d -name node_modules -prune -o -type d -name target -prune -o -type d -name dist -prune -o -type f -name \"*.java\" -print | head -100)",
+      "Bash(cd backend && grep -rn \"MapperScan\\\\|typeAliasesPackage\\\\|mapper-locations\\\\|basePackage\\\\|scanBasePackages\" src/main/resources pom.xml src/main/java --include=* 2>/dev/null | head -20; echo \"---resources---\"; ls src/main/resources; echo \"---mapper xml---\"; find . -name \"*.xml\" -path \"*resources*\" | head)",
+      "Bash(cd backend/src/main/java/com/jieyou/photography && cat PhotographyApplication.java && echo \"=== Mapper annot ===\" && grep -l \"@Mapper\" -r . | head -20 && echo \"=== file count ===\" && find . -name \"*.java\" | wc -l)",
+      "Bash(cd backend/src/main/java/com/jieyou/photography && find . -type d | sort | sed 's|^\\\\./||' && echo \"=== OrderMapper imports ===\" && grep -n \"^import\" mapper/order/OrderMapper.java)"
+    ]
+  }
+}
