@@ -5,7 +5,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * 订单状态机，依据 API 约定 4.2/第 6 章。
+ * 订单状态机
  * 纯 Java 实现，不依赖数据库与 Spring，便于单元测试覆盖完整状态转移表。
  */
 public final class OrderStateMachine {

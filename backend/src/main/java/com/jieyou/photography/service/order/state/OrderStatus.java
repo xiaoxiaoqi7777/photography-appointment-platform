@@ -5,14 +5,14 @@ package com.jieyou.photography.service.order.state;
  */
 public enum OrderStatus {
 
-    PENDING(false),
-    CONFIRMED(false),
-    REJECTED(true),
-    CANCELLED(true),
-    SHOOTING_DONE(false),
-    UPLOADED(false),
-    MODIFYING(false),
-    DELIVERED(true);
+    PENDING(false),   //待确认
+    CONFIRMED(false),    //已确认（待拍摄）
+    REJECTED(true),      //已拒绝
+    CANCELLED(true),   //已取消
+    SHOOTING_DONE(false),      //拍摄完成（修图中）
+    UPLOADED(false),        //精修已上传（待反馈）
+    MODIFYING(false),      //修改中
+    DELIVERED(true);     //已交付
 
     private final boolean terminal;
 

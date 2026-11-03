@@ -43,7 +43,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 /**
- * 订单业务逻辑，依据 API 约定 5.4 与第 4/6 章：
+ * 订单业务逻辑
  * - 状态变更统一使用条件更新（乐观锁），0 行命中返回 40900；
  * - 每次状态变更在同一事务中写入 t_order_log；
  * - 用户只能操作本人订单，管理员不可下单。
@@ -266,7 +266,7 @@ public class OrderService {
         LocalDateTime now = LocalDateTime.now();
         LambdaUpdateWrapper<Order> update = new LambdaUpdateWrapper<Order>()
                 .eq(Order::getId, orderId)
-                .eq(Order::getStatus, from.name())
+                .eq(Order::getStatus, from.name())   //只有数据库里面的状态和预期的一样，才更新成功
                 .set(Order::getStatus, to.name())
                 .set(Order::getUpdateTime, now);
         if (extraFields != null) {

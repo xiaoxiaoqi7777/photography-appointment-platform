@@ -109,7 +109,7 @@ public class PhotoService {
         List<FailedFile> failed = new ArrayList<>();
         List<Path> writtenFiles = new ArrayList<>();
 
-        try {
+        try {  //循环处理每一张照片
             for (MultipartFile file : files) {
                 String rawName = file.getOriginalFilename();
                 String name = displayName(rawName);
@@ -163,7 +163,7 @@ public class PhotoService {
             }
 
             if (!success.isEmpty()) {
-                orderService.markUploaded(orderId, operator);
+                orderService.markUploaded(orderId, operator);   //有一张上传成功，就改变订单的状态，改为“订单已上传”
             }
             return new UploadResult(success, failed);
         } catch (RuntimeException e) {
